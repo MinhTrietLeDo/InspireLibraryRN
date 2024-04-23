@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import LoginScreen from './component/loginScreen';
 import CreateAccScreen from './component/createAccScreen';
+import { initDB } from './config/database';
 
 const Stack = createStackNavigator();
 
@@ -24,7 +25,7 @@ const RootStack = () => {
             component={CreateAccScreen}
             options={{
               headerBackVisible: false,
-              // headerShown: false,
+              headerShown: false,
             }}
           />
         </Stack.Group>
@@ -34,6 +35,14 @@ const RootStack = () => {
 };
 
 const App = () => {
+  useEffect(() => {
+    const initializeDatabase = async () => {
+      await initDB();
+    };
+
+    initializeDatabase();
+  }, []);
+
   return <RootStack />;
 };
 

@@ -20,20 +20,7 @@ const LoginScreen = ({navigation}) => {
   const [showPassword, setShowPassword] = useState(true);
 
   useEffect(() => {
-    const fecthData = async () => {
-      try {
-        const username = await AsyncStorage.getItem('username');
-        const password = await AsyncStorage.getItem('password');
-        if (!!username && !!password) {
-          await setUsername(username);
-          setPassword(password);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fecthData().catch(console.error);
+    
   }, []);
 
   const loginFunction = async () => {};
@@ -88,11 +75,11 @@ const LoginScreen = ({navigation}) => {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={{justifyContent: 'flex-end', flexDirection: 'row'}}>
+        {/* <View style={{justifyContent: 'flex-end', flexDirection: 'row'}}>
           <TouchableOpacity onPress={() => rememeberMe()}>
             <Text>Forgot?</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
         <View style= {{margin:10}}>
             <Button
                 title="Login"
@@ -101,9 +88,10 @@ const LoginScreen = ({navigation}) => {
         </View>
         
       </View>
-      <View>
+      <View style={{flexDirection: 'row'}}>
+        <Text>New to the app? </Text>
         <TouchableOpacity onPress={() => navigation.navigate('CreateAccount')}>
-            <Text>Create New Account</Text>
+            <Text style={{color: 'red'}}>Register</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -122,9 +110,9 @@ const styles = StyleSheet.create({
   inputContainer: {
     // backgroundColor: 'black',
     width: windowWidth * 0.7,
-    borderColor: 'black',
-    borderRadius: (windowHeight + windowWidth) * 0.01,
-    borderWidth: (windowHeight + windowWidth) * 0.0005,
+    borderBottomColor: 'black',
+    // borderRadius: (windowHeight + windowWidth) * 0.01,
+    borderBottomWidth: (windowHeight + windowWidth) * 0.0005,
     marginTop: 10,
     marginBottom: 10,
     padding: 10,

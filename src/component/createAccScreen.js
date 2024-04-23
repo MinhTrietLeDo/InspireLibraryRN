@@ -12,25 +12,31 @@ import {windowHeight, windowWidth} from '../config/courseStyle';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+import {addUser, initDB} from '../config/database';
 
 const CreateAccScreen = ({navigation}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [isRemember, setIsRemember] = useState(false);
   const [showPassword, setShowPassword] = useState(true);
 
-  useEffect(() => {
-    
-  }, []);
+  useEffect(() => {}, []);
 
-  const showPass = () => {
-    setShowPassword(!showPassword);
+  const handleRegister = async () => {
+    await initDB();
+    console.log(username, password);
+    try {
+        // const userId = await addUser(username, password);
+      const userId = await addUser('testuser', 'testpassword');
+      console.log(`User created successfully: ID ${userId}`);
+    } catch (error) {
+      console.log(`Failed to create user: ${error}`);
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>12431234</Text>
+      <Text>Register</Text>
       <View style={styles.loginContainer}>
         <View style={styles.inputContainer}>
           <View style={styles.input}>
@@ -74,23 +80,10 @@ const CreateAccScreen = ({navigation}) => {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={{justifyContent: 'flex-end', flexDirection: 'row'}}>
-          <TouchableOpacity onPress={() => rememeberMe()}>
-            <Text>Forgot?</Text>
-          </TouchableOpacity>
+
+        <View style={{margin: 10}}>
+          <Button title="Register" onPress={() => handleRegister()} />
         </View>
-        <View style= {{margin:10}}>
-            <Button
-                title="Login"
-                onPress={() => {}}
-            />
-        </View>
-        
-      </View>
-      <View>
-        <TouchableOpacity>
-            <Text>Create New Account</Text>
-        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -108,9 +101,9 @@ const styles = StyleSheet.create({
   inputContainer: {
     // backgroundColor: 'black',
     width: windowWidth * 0.7,
-    borderColor: 'black',
-    borderRadius: (windowHeight + windowWidth) * 0.01,
-    borderWidth: (windowHeight + windowWidth) * 0.0005,
+    borderBottomColor: 'black',
+    // borderRadius: (windowHeight + windowWidth) * 0.01,
+    borderBottomWidth: (windowHeight + windowWidth) * 0.0005,
     marginTop: 10,
     marginBottom: 10,
     padding: 10,
