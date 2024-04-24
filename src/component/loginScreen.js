@@ -9,21 +9,32 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {windowHeight, windowWidth} from '../config/courseStyle';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {loginUser} from '../config/database';
+import { CommonActions } from '@react-navigation/native';
 
 const LoginScreen = ({navigation}) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('testuser');
+  const [password, setPassword] = useState('testpassword');
   const [showPassword, setShowPassword] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  useEffect(() => {
-    
-  }, []);
+  useEffect(() => {}, []);
 
-  const loginFunction = async () => {};
+  const loginFunction = async () => {
+    const result = await loginUser(username, password);
+    if (result.success) {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{name: 'Logined'}],
+        }),
+      );
+    } else {
+      setErrorMessage(result.message);
+    }
+  };
 
   const showPass = () => {
     setShowPassword(!showPassword);
@@ -75,23 +86,17 @@ const LoginScreen = ({navigation}) => {
             </TouchableOpacity>
           </View>
         </View>
-        {/* <View style={{justifyContent: 'flex-end', flexDirection: 'row'}}>
-          <TouchableOpacity onPress={() => rememeberMe()}>
-            <Text>Forgot?</Text>
-          </TouchableOpacity>
-        </View> */}
-        <View style= {{margin:10}}>
-            <Button
-                title="Login"
-                onPress={() => {}}
-            />
+        {errorMessage ? (
+          <Text style={styles.errorText}>{errorMessage}</Text>
+        ) : null}
+        <View style={{margin: 10}}>
+          <Button title="Login" onPress={() => loginFunction()} />
         </View>
-        
       </View>
       <View style={{flexDirection: 'row'}}>
         <Text>New to the app? </Text>
         <TouchableOpacity onPress={() => navigation.navigate('CreateAccount')}>
-            <Text style={{color: 'red'}}>Register</Text>
+          <Text style={{color: 'red'}}>Register</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -109,7 +114,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     // backgroundColor: 'black',
-    width: windowWidth * 0.7,
+    width: windowWidth * 0.8,
     borderBottomColor: 'black',
     // borderRadius: (windowHeight + windowWidth) * 0.01,
     borderBottomWidth: (windowHeight + windowWidth) * 0.0005,
@@ -128,6 +133,10 @@ const styles = StyleSheet.create({
   },
   textInput: {
     // width: '100%'
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
   },
 });
 

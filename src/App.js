@@ -3,7 +3,9 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import LoginScreen from './component/loginScreen';
 import CreateAccScreen from './component/createAccScreen';
-import { initDB } from './config/database';
+import HomeScreen from './component/homeScreen';
+import {initDB} from './config/database';
+import DrawerTab from './component/drawerNavigation';
 
 const Stack = createStackNavigator();
 
@@ -23,6 +25,16 @@ const RootStack = () => {
           <Stack.Screen
             name="CreateAccount"
             component={CreateAccScreen}
+            options={{
+              headerBackVisible: false,
+              headerShown: false,
+            }}
+          />
+        </Stack.Group>
+        <Stack.Group>
+          <Stack.Screen
+            name="Logined"
+            component={DrawerTab}
             options={{
               headerBackVisible: false,
               headerShown: false,
