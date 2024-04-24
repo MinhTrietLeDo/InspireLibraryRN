@@ -12,7 +12,7 @@ import {windowHeight, windowWidth} from '../config/courseStyle';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import {loginUser} from '../config/database';
-import { CommonActions } from '@react-navigation/native';
+import {CommonActions} from '@react-navigation/native';
 
 const LoginScreen = ({navigation}) => {
   const [username, setUsername] = useState('testuser');
@@ -76,6 +76,7 @@ const LoginScreen = ({navigation}) => {
                 placeholder="Password"
                 autoCapitalize="none"
                 secureTextEntry={showPassword}
+                style={styles.textInput}
               />
             </View>
             <TouchableOpacity onPress={() => showPass()}>
@@ -132,7 +133,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   textInput: {
-    // width: '100%'
+    width: '80%',
   },
   errorText: {
     color: 'red',

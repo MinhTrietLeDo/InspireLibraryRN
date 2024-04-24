@@ -7,6 +7,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {windowHeight, windowWidth} from '../config/courseStyle';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -27,11 +28,14 @@ const CreateAccScreen = ({navigation}) => {
     const userExists = await doesUserExist(username);
     if (userExists) {
       setErrorMessage('Account existed');
-      // console.log('Account existed')
     } else {
       return addUser(username, password)
         .then(userId => {
-          console.log(`User created with ID: ${userId}`);
+          Alert.alert(
+            'Account Created',
+            'Your account has been created successfully!',
+            [{text: 'OK', onPress: () => navigation.goBack()}],
+          );
           return 'Account successfully created.';
         })
         .catch(error => {
@@ -84,7 +88,6 @@ const CreateAccScreen = ({navigation}) => {
             <Feather
               name="user"
               size={(windowHeight + windowWidth) * 0.02}
-              //   color="#666"
               style={{marginRight: 5}}
             />
             <TextInput
@@ -111,6 +114,7 @@ const CreateAccScreen = ({navigation}) => {
                 placeholder="Password"
                 autoCapitalize="none"
                 secureTextEntry={showPassword}
+                style={styles.textInput}
               />
             </View>
             <TouchableOpacity onPress={() => showPass()}>
@@ -136,6 +140,7 @@ const CreateAccScreen = ({navigation}) => {
                 placeholder="Re-enter Password"
                 autoCapitalize="none"
                 secureTextEntry={showPassword}
+                style={styles.textInput}
               />
             </View>
             <TouchableOpacity onPress={() => showPass()}>
@@ -193,7 +198,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   textInput: {
-    // width: '100%'
+    width: '80%',
   },
   errorText: {
     color: 'red',

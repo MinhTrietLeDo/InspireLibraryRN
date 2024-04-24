@@ -3,7 +3,6 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import LoginScreen from './component/loginScreen';
 import CreateAccScreen from './component/createAccScreen';
-import HomeScreen from './component/homeScreen';
 import {initDB} from './config/database';
 import DrawerTab from './component/drawerNavigation';
 
