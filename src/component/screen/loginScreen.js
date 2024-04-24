@@ -8,10 +8,10 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import {windowHeight, windowWidth} from '../config/courseStyle';
+import {windowHeight, windowWidth} from '../../config/courseStyle';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
-import {loginUser} from '../config/database';
+import {loginUser} from '../../config/database';
 import {CommonActions} from '@react-navigation/native';
 
 const LoginScreen = ({navigation}) => {

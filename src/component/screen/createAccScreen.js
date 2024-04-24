@@ -9,10 +9,10 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import {windowHeight, windowWidth} from '../config/courseStyle';
+import {windowHeight, windowWidth} from '../../config/courseStyle';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
-import {addUser, initDB, doesUserExist} from '../config/database';
+import {addUser, initDB, doesUserExist} from '../../config/database';
 
 const CreateAccScreen = ({navigation}) => {
   const [username, setUsername] = useState('');

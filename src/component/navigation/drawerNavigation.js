@@ -5,10 +5,10 @@ import {
   DrawerItem,
 } from '@react-navigation/drawer';
 import React from 'react';
-import HomeScreen from './homeScreen';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {windowHeight, windowWidth} from '../config/courseStyle';
+import {windowHeight, windowWidth} from '../../config/courseStyle';
 import {SafeAreaView, StyleSheet, View, Alert} from 'react-native';
+import HomeBottomTab from './homeBottomTab';
 
 const Drawer = createDrawerNavigator();
 
@@ -44,9 +44,13 @@ const DrawerTab = () => {
       drawerContent={props => <CustomDrawer {...props} screenOptions={{}} />}>
       <Drawer.Screen
         name="Home"
-        component={HomeScreen}
+        component={HomeBottomTab}
         options={{
-          title: 'Home',
+          headerStyle:{
+            backgroundColor: 'transparent'
+          },
+          // headerShown: false,
+          title: '',
           headerTitleAlign: 'center',
           drawerIcon: () => (
             <MaterialCommunityIcons
