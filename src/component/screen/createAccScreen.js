@@ -12,54 +12,75 @@ import {
 import {windowHeight, windowWidth} from '../../config/courseStyle';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
-import {addUser, initDB, doesUserExist} from '../../config/database';
+import auth from '@react-native-firebase/auth';
+import LoadingModal from '../../config/loadingModal';
 
 const CreateAccScreen = ({navigation}) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('minttriet1705@gmail.com');
+  const [password, setPassword] = useState('12345678@');
+  const [confirmPassword, setConfirmPassword] = useState('12345678@');
   const [showPassword, setShowPassword] = useState(true);
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {}, []);
 
   const handleRegister = async () => {
-    // Perform password validation first
-    const {valid, message} = validatePassword(password, confirmPassword);
-    if (!valid) {
-      setErrorMessage(message);
+    // setIsLoading(true);
+    const emailValidation = validateEmail(username);
+    if (!emailValidation.valid) {
+      setErrorMessage(emailValidation.message);
+      return;
+    }
+
+    const passwordValidation = validatePassword(password, confirmPassword);
+    if (!passwordValidation.valid) {
+      setErrorMessage(passwordValidation.message);
       return; // Exit the function early if validation fails
     }
-
-    // Initialize the database
-    await initDB();
-
-    // Check if the user already exists
-    const userExists = await doesUserExist(username);
-    if (userExists) {
-      setErrorMessage('Account already exists.');
-      return; // Exit the function if the user exists
-    }
-
-    // If validation passes and the user does not exist, add the user
+    console.log(emailValidation, passwordValidation);
     try {
-      const userId = await addUser(username, password);
-      if (userId) {
-        Alert.alert(
-          'Account Created',
-          'Your account has been created successfully!',
-          [{text: 'OK', onPress: () => navigation.goBack()}],
-        );
-        // Do something with the userId if needed
-      }
+      await auth().createUserWithEmailAndPassword(
+        username,
+        password,
+      );
+      // console.log(result);
+      Alert.alert(
+        'Account Created',
+        'Your account has been created successfully!',
+        [{text: 'OK', onPress: () => navigation.goBack()}],
+      );
     } catch (error) {
-      console.error('Error creating user:', error);
-      setErrorMessage('Error creating account.');
+      setIsLoading(false);
+      console.log('123123123:', error);
+      // Handle different errors accordingly
+      if (error.code === 'auth/email-already-in-use') {
+        setErrorMessage('That email address is already in use!');
+      } else if (error.code === 'auth/invalid-email') {
+        setErrorMessage('That email address is invalid!');
+      } else {
+        setErrorMessage('Failed to create account. Please try again later.');
+      }
     }
   };
 
   const showPass = () => {
     setShowPassword(!showPassword);
+  };
+
+  const validateEmail = username => {
+    console.log('AAAYTFAHGFSĐ', username);
+    // This regular expression is a general pattern for basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // Test the email against the regex pattern
+    if (emailRegex.test(username)) {
+      // If email matches the pattern, it's a valid email format
+      return {valid: true, message: 'Email is valid.'};
+    } else {
+      // If email doesn't match the pattern, it's an invalid email format
+      return {valid: false, message: 'Please enter a valid email address.'};
+    }
   };
 
   const validatePassword = (password, confirmPassword) => {
@@ -173,6 +194,7 @@ const CreateAccScreen = ({navigation}) => {
           <Text style={{color: 'red'}}>Sign in</Text>
         </TouchableOpacity>
       </View>
+      {isLoading ? <LoadingModal loading={isLoading} /> : null}
     </SafeAreaView>
   );
 };

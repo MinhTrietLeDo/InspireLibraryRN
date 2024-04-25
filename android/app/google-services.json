@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "151204867327",
+    "project_id": "inspirelibrary-298a6",
+    "storage_bucket": "inspirelibrary-298a6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:151204867327:android:e2d2033d9fdf500df770ca",
+        "android_client_info": {
+          "package_name": "com.inspirelibrary"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_7biaEAV9rhrgJTKTDPQ9aDHvvfPH3Fo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
