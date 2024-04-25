@@ -50,8 +50,9 @@ const DrawerTab = () => {
             backgroundColor: 'transparent'
           },
           // headerShown: false,
-          title: '',
+          title: 'Home',
           headerTitleAlign: 'center',
+          headerTitle:'',
           drawerIcon: () => (
             <MaterialCommunityIcons
               name="home"
@@ -66,9 +67,12 @@ const DrawerTab = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    // backgroundColor: 'black',
+    height: windowHeight * 0.97,
     margin: (windowHeight + windowWidth) * 0.001,
+    justifyContent: 'space-between',
     alignContent: 'center',
-    alignSelf: 'stretch',
+    padding: (windowHeight + windowWidth) * 0.005
   },
   split: {
     borderWidth: (windowHeight + windowWidth) * 0.0005,

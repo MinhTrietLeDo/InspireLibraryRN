@@ -24,29 +24,37 @@ const CreateAccScreen = ({navigation}) => {
   useEffect(() => {}, []);
 
   const handleRegister = async () => {
-    await initDB();
-    const userExists = await doesUserExist(username);
-    if (userExists) {
-      setErrorMessage('Account existed');
-    } else {
-      return addUser(username, password)
-        .then(userId => {
-          Alert.alert(
-            'Account Created',
-            'Your account has been created successfully!',
-            [{text: 'OK', onPress: () => navigation.goBack()}],
-          );
-          return 'Account successfully created.';
-        })
-        .catch(error => {
-          console.error('Error creating user:', error);
-          return 'Error creating account.';
-        });
-    }
+    // Perform password validation first
     const {valid, message} = validatePassword(password, confirmPassword);
     if (!valid) {
       setErrorMessage(message);
-      return message;
+      return; // Exit the function early if validation fails
+    }
+
+    // Initialize the database
+    await initDB();
+
+    // Check if the user already exists
+    const userExists = await doesUserExist(username);
+    if (userExists) {
+      setErrorMessage('Account already exists.');
+      return; // Exit the function if the user exists
+    }
+
+    // If validation passes and the user does not exist, add the user
+    try {
+      const userId = await addUser(username, password);
+      if (userId) {
+        Alert.alert(
+          'Account Created',
+          'Your account has been created successfully!',
+          [{text: 'OK', onPress: () => navigation.goBack()}],
+        );
+        // Do something with the userId if needed
+      }
+    } catch (error) {
+      console.error('Error creating user:', error);
+      setErrorMessage('Error creating account.');
     }
   };
 

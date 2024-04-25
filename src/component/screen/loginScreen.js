@@ -7,20 +7,41 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  Modal,
 } from 'react-native';
 import {windowHeight, windowWidth} from '../../config/courseStyle';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {loginUser} from '../../config/database';
 import {CommonActions} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({navigation}) => {
-  const [username, setUsername] = useState('testuser');
-  const [password, setPassword] = useState('testpassword');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isRemember, setIsRemember] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const autofillCredentials = async () => {
+      try {
+        const credentials = await AsyncStorage.getItem('credentials');
+        if (credentials) {
+          const {username, password} = JSON.parse(credentials);
+          setUsername(username);
+          setPassword(password);
+          setIsRemember(true);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    autofillCredentials();
+  }, []);
 
   const loginFunction = async () => {
     const result = await loginUser(username, password);
@@ -38,6 +59,24 @@ const LoginScreen = ({navigation}) => {
 
   const showPass = () => {
     setShowPassword(!showPassword);
+  };
+
+  const isRememberButton = async () => {
+    setIsRemember(!isRemember);
+    if (!isRemember) {
+      await AsyncStorage.setItem(
+        'credentials',
+        JSON.stringify({username, password}),
+      );
+      console.log('remember');
+    } else {
+      await AsyncStorage.removeItem('credentials');
+      console.log('i forgor 💀');
+    }
+  };
+
+  const modalForgetPassword = () => {
+    setShowModal(!showModal);
   };
 
   return (
@@ -90,16 +129,42 @@ const LoginScreen = ({navigation}) => {
         {errorMessage ? (
           <Text style={styles.errorText}>{errorMessage}</Text>
         ) : null}
+        <View style={styles.forgotAndRemember}>
+          <TouchableOpacity onPress={() => isRememberButton()}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <FontAwesome
+                name={isRemember ? 'circle' : 'circle-o'}
+                size={(windowHeight + windowWidth) * 0.01}
+                style={{marginRight: 5}}
+              />
+              <Text>Remember Me</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => modalForgetPassword()}>
+            <Text>Forgot password?</Text>
+          </TouchableOpacity>
+        </View>
         <View style={{margin: 10}}>
           <Button title="Login" onPress={() => loginFunction()} />
         </View>
       </View>
       <View style={{flexDirection: 'row'}}>
-        <Text>New to the app? </Text>
+        <Text>Don't have an account? </Text>
         <TouchableOpacity onPress={() => navigation.navigate('CreateAccount')}>
           <Text style={{color: 'red'}}>Register</Text>
         </TouchableOpacity>
       </View>
+
+      {/*============ Forget Password Modal ============*/}
+      <Modal
+        animationType="slide"
+        visible={showModal}
+        onRequestClose={() => {
+          setShowModal(!showModal);
+        }}>
+        <Text>MODAL</Text>
+      </Modal>
+      {/*============ Forget Password Modal ============*/}
     </SafeAreaView>
   );
 };
@@ -137,7 +202,13 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: 'red',
+    marginTop: 10,
     marginBottom: 10,
+  },
+  forgotAndRemember: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    margin: 5,
   },
 });
 

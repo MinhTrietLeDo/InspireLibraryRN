@@ -12,8 +12,14 @@ const Tab = createBottomTabNavigator();
 const HomeBottomTab = () => {
   return (
     <Tab.Navigator
-      tabBarOptions={{showLabel: false}}
       screenOptions={{
+        tabBarShowLabel: false,
+        tabBarStyle: [
+          {
+            display: 'flex',
+          },
+          null,
+        ],
         tabBarActiveTintColor: 'black',
         tabBarStyle: {
           backgroundColor: 'white',
@@ -45,18 +51,6 @@ const HomeBottomTab = () => {
         }}
       />
       <Tab.Screen
-        component={SettingScreen}
-        name="Setting"
-        options={{
-          headerBackVisible: false,
-          headerShown: false,
-          headerTitleAlign: 'center',
-          tabBarIcon: ({color, size}) => (
-            <Ionicons name="settings-outline" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tab.Screen
         component={BooksScreen}
         name="Books"
         options={{
@@ -65,6 +59,18 @@ const HomeBottomTab = () => {
           headerTitleAlign: 'center',
           tabBarIcon: ({color, size}) => (
             <Ionicons name="book-outline" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        component={SettingScreen}
+        name="Setting"
+        options={{
+          headerBackVisible: false,
+          headerShown: false,
+          headerTitleAlign: 'center',
+          tabBarIcon: ({color, size}) => (
+            <Ionicons name="settings-outline" color={color} size={size} />
           ),
         }}
       />
