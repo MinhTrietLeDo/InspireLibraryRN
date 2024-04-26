@@ -26,7 +26,6 @@ const CreateAccScreen = ({navigation}) => {
   useEffect(() => {}, []);
 
   const handleRegister = async () => {
-    // setIsLoading(true);
     const emailValidation = validateEmail(username);
     if (!emailValidation.valid) {
       setErrorMessage(emailValidation.message);
@@ -39,28 +38,30 @@ const CreateAccScreen = ({navigation}) => {
       return; // Exit the function early if validation fails
     }
     console.log(emailValidation, passwordValidation);
+
+    const timeoutId = setTimeout(() => {
+      console.log('Timeout reached, the operation took too long to complete.');
+      // Optionally, set an error message in state to inform the user
+      setErrorMessage('The operation timed out. Please try again.');
+    }, 10000); // Set timeout to 10 seconds, adjust as needed
+
     try {
-      await auth().createUserWithEmailAndPassword(
+      console.log('Starting account creation');
+      const result = await auth().createUserWithEmailAndPassword(
         username,
         password,
       );
-      // console.log(result);
+      console.log('Firebase user creation result:', result);
       Alert.alert(
         'Account Created',
         'Your account has been created successfully!',
         [{text: 'OK', onPress: () => navigation.goBack()}],
       );
     } catch (error) {
-      setIsLoading(false);
-      console.log('123123123:', error);
-      // Handle different errors accordingly
-      if (error.code === 'auth/email-already-in-use') {
-        setErrorMessage('That email address is already in use!');
-      } else if (error.code === 'auth/invalid-email') {
-        setErrorMessage('That email address is invalid!');
-      } else {
-        setErrorMessage('Failed to create account. Please try again later.');
-      }
+      console.log('Error during Firebase user creation:', error);
+      setErrorMessage(error.message);
+    } finally {
+      clearTimeout(timeoutId);
     }
   };
 

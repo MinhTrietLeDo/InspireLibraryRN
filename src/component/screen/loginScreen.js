@@ -13,13 +13,13 @@ import {windowHeight, windowWidth} from '../../config/courseStyle';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {loginUser} from '../../config/database';
 import {CommonActions} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import auth from '@react-native-firebase/auth';
 
 const LoginScreen = ({navigation}) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('test@example.com');
+  const [password, setPassword] = useState('password123!');
   const [showPassword, setShowPassword] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
   const [isRemember, setIsRemember] = useState(false);
@@ -44,16 +44,25 @@ const LoginScreen = ({navigation}) => {
   }, []);
 
   const loginFunction = async () => {
-    const result = await loginUser(username, password);
-    if (result.success) {
+    try {
+      // setIsLoading(true);
+      const userCredential = await auth().signInWithEmailAndPassword(
+        username,
+        password,
+      );
+      console.log('User logged in:', userCredential);
+
+      // Reset navigation and move to the 'Logined' screen
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
           routes: [{name: 'Logined'}],
         }),
       );
-    } else {
-      setErrorMessage(result.message);
+    } catch (error) {
+      console.error('Login error:', error);
+    } finally {
+      // setIsLoading(false); // Optional: manage loading state
     }
   };
 
