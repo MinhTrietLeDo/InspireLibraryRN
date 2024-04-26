@@ -6,11 +6,13 @@ import {
 } from '@react-navigation/drawer';
 import React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Feather from 'react-native-vector-icons/Feather';
 import {windowHeight, windowWidth} from '../../config/courseStyle';
 import {SafeAreaView, StyleSheet, View, Alert} from 'react-native';
 import HomeBottomTab from './homeBottomTab';
 import auth from '@react-native-firebase/auth';
 import {CommonActions, useNavigation} from '@react-navigation/native';
+import ProfileScreen from '../screen/profileScreen';
 
 const Drawer = createDrawerNavigator();
 
@@ -29,14 +31,16 @@ const CustomDrawer = props => {
       );
     } catch (error) {
       console.error('Logout error:', error);
-      // Optionally, show the error message to the user or handle the logout error
     }
   };
 
   return (
     <DrawerContentScrollView {...props}>
       <SafeAreaView style={styles.container}>
-        <DrawerItemList {...props} />
+        <View>
+          <DrawerItemList {...props} />
+        </View>
+
         <View style={styles.botContainer}>
           <View style={styles.splitBottom} />
           <DrawerItem
@@ -76,6 +80,22 @@ const DrawerTab = ({navigation}) => {
               name="home"
               size={(windowHeight + windowWidth) * 0.02}
             />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: 'transparent',
+          },
+          // headerShown: false,
+          title: 'Profile',
+          headerTitleAlign: 'center',
+          headerTitle: '',
+          drawerIcon: () => (
+            <Feather name="user" size={(windowHeight + windowWidth) * 0.02} />
           ),
         }}
       />
