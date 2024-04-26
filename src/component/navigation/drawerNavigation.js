@@ -9,11 +9,29 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {windowHeight, windowWidth} from '../../config/courseStyle';
 import {SafeAreaView, StyleSheet, View, Alert} from 'react-native';
 import HomeBottomTab from './homeBottomTab';
+import auth from '@react-native-firebase/auth';
+import {CommonActions, useNavigation} from '@react-navigation/native';
 
 const Drawer = createDrawerNavigator();
 
-const CustomDrawer = (props, {navigation}) => {
-  const handleLogOut = () => {};
+const CustomDrawer = props => {
+  const navigation = useNavigation();
+
+  const handleLogOut = async () => {
+    try {
+      await auth().signOut();
+      console.log(navigation);
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        }),
+      );
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Optionally, show the error message to the user or handle the logout error
+    }
+  };
 
   return (
     <DrawerContentScrollView {...props}>
@@ -38,7 +56,7 @@ const CustomDrawer = (props, {navigation}) => {
   );
 };
 
-const DrawerTab = () => {
+const DrawerTab = ({navigation}) => {
   return (
     <Drawer.Navigator
       drawerContent={props => <CustomDrawer {...props} screenOptions={{}} />}>
@@ -46,13 +64,13 @@ const DrawerTab = () => {
         name="Home"
         component={HomeBottomTab}
         options={{
-          headerStyle:{
-            backgroundColor: 'transparent'
+          headerStyle: {
+            backgroundColor: 'transparent',
           },
           // headerShown: false,
           title: 'Home',
           headerTitleAlign: 'center',
-          headerTitle:'',
+          headerTitle: '',
           drawerIcon: () => (
             <MaterialCommunityIcons
               name="home"
@@ -72,7 +90,7 @@ const styles = StyleSheet.create({
     margin: (windowHeight + windowWidth) * 0.001,
     justifyContent: 'space-between',
     alignContent: 'center',
-    padding: (windowHeight + windowWidth) * 0.005
+    padding: (windowHeight + windowWidth) * 0.005,
   },
   split: {
     borderWidth: (windowHeight + windowWidth) * 0.0005,

@@ -16,9 +16,9 @@ import auth from '@react-native-firebase/auth';
 import LoadingModal from '../../config/loadingModal';
 
 const CreateAccScreen = ({navigation}) => {
-  const [username, setUsername] = useState('minttriet1705@gmail.com');
-  const [password, setPassword] = useState('12345678@');
-  const [confirmPassword, setConfirmPassword] = useState('12345678@');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);

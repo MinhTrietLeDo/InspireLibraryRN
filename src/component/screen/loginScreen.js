@@ -8,6 +8,7 @@ import {
   TextInput,
   TouchableOpacity,
   Modal,
+  Alert,
 } from 'react-native';
 import {windowHeight, windowWidth} from '../../config/courseStyle';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -18,8 +19,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 
 const LoginScreen = ({navigation}) => {
-  const [username, setUsername] = useState('test@example.com');
-  const [password, setPassword] = useState('password123!');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
   const [isRemember, setIsRemember] = useState(false);
@@ -51,8 +52,6 @@ const LoginScreen = ({navigation}) => {
         password,
       );
       console.log('User logged in:', userCredential);
-
-      // Reset navigation and move to the 'Logined' screen
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
@@ -60,6 +59,18 @@ const LoginScreen = ({navigation}) => {
         }),
       );
     } catch (error) {
+      console.error('Login error:', error);
+      if (error.code === 'auth/invalid-credential') {
+        setErrorMessage('Wrong password!');
+      } else if (error.code === 'auth/too-many-requests') {
+        setErrorMessage(
+          'Too many unsuccessful login. Please try again later!',
+        );
+      } else {
+        setErrorMessage(
+          'An unexpected error occurred. Please try again later.',
+        );
+      }
       console.error('Login error:', error);
     } finally {
       // setIsLoading(false); // Optional: manage loading state
@@ -86,6 +97,20 @@ const LoginScreen = ({navigation}) => {
 
   const modalForgetPassword = () => {
     setShowModal(!showModal);
+  };
+
+  const forgotPassword = async () => {
+    try {
+      await auth().sendPasswordResetEmail(username);
+      // console.log('FORGOR PASWOD: ', result);
+      Alert.alert(
+        'Email Sent',
+        'A password reset email has been sent to your email address.',
+        [{text: 'OK'}],
+      );
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -135,9 +160,11 @@ const LoginScreen = ({navigation}) => {
             </TouchableOpacity>
           </View>
         </View>
-        {errorMessage ? (
-          <Text style={styles.errorText}>{errorMessage}</Text>
-        ) : null}
+        <View>
+          {errorMessage ? (
+            <Text style={styles.errorText}>{errorMessage}</Text>
+          ) : null}
+        </View>
         <View style={styles.forgotAndRemember}>
           <TouchableOpacity onPress={() => isRememberButton()}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -171,7 +198,29 @@ const LoginScreen = ({navigation}) => {
         onRequestClose={() => {
           setShowModal(!showModal);
         }}>
-        <Text>MODAL</Text>
+        <View style={styles.container}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>
+              Enter your email to reset password:
+            </Text>
+            <TextInput
+              placeholder="Email address"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              onChangeText={username => setUsername(username)}
+              value={username}
+              style={styles.textInput}
+            />
+            <Button
+              title="Send Reset Link"
+              onPress={() => {
+                forgotPassword(username);
+                setShowModal(false);
+              }}
+            />
+            <Button title="Close" onPress={() => setShowModal(false)} />
+          </View>
+        </View>
       </Modal>
       {/*============ Forget Password Modal ============*/}
     </SafeAreaView>
@@ -188,10 +237,8 @@ const styles = StyleSheet.create({
     marginTop: windowHeight * 0.01,
   },
   inputContainer: {
-    // backgroundColor: 'black',
     width: windowWidth * 0.8,
     borderBottomColor: 'black',
-    // borderRadius: (windowHeight + windowWidth) * 0.01,
     borderBottomWidth: (windowHeight + windowWidth) * 0.0005,
     marginTop: 10,
     marginBottom: 10,
@@ -218,6 +265,30 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     margin: 5,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
