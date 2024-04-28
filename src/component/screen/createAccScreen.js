@@ -13,7 +13,7 @@ import {windowHeight, windowWidth} from '../../config/courseStyle';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import auth from '@react-native-firebase/auth';
-import LoadingModal from '../../config/loadingModal';
+import CustomButton from '../customComponent/customButton';
 
 const CreateAccScreen = ({navigation}) => {
   const [username, setUsername] = useState('');
@@ -21,7 +21,7 @@ const CreateAccScreen = ({navigation}) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {}, []);
 
@@ -47,6 +47,7 @@ const CreateAccScreen = ({navigation}) => {
 
     try {
       console.log('Starting account creation');
+      setIsLoading(true);
       const result = await auth().createUserWithEmailAndPassword(
         username,
         password,
@@ -62,6 +63,7 @@ const CreateAccScreen = ({navigation}) => {
       setErrorMessage(error.message);
     } finally {
       clearTimeout(timeoutId);
+      setIsLoading(false);
     }
   };
 
@@ -185,7 +187,11 @@ const CreateAccScreen = ({navigation}) => {
           <Text style={styles.errorText}>{errorMessage}</Text>
         ) : null}
         <View style={{margin: 10}}>
-          <Button title="Register" onPress={() => handleRegister()} />
+          <CustomButton
+            loading={isLoading}
+            title="Register"
+            onPress={() => handleRegister()}
+          />
         </View>
       </View>
 
@@ -195,7 +201,6 @@ const CreateAccScreen = ({navigation}) => {
           <Text style={{color: 'red'}}>Sign in</Text>
         </TouchableOpacity>
       </View>
-      {isLoading ? <LoadingModal loading={isLoading} /> : null}
     </SafeAreaView>
   );
 };
@@ -205,6 +210,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-around',
     alignItems: 'center',
+    backgroundColor: 'white',
   },
   loginContainer: {
     marginTop: windowHeight * 0.01,

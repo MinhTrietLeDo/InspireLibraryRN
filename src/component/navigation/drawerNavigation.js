@@ -68,9 +68,9 @@ const DrawerTab = ({navigation}) => {
         name="Home"
         component={HomeBottomTab}
         options={{
-          headerStyle: {
-            backgroundColor: 'transparent',
-          },
+          // headerStyle: {
+          //   backgroundColor: 'transparent',
+          // },
           // headerShown: false,
           title: 'Home',
           headerTitleAlign: 'center',

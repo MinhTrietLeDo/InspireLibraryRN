@@ -24,18 +24,18 @@ const HomeBottomTab = () => {
         tabBarStyle: {
           backgroundColor: 'white',
           borderTopColor: 'transparent',
-          height: windowHeight * 0.07,
+          height: windowHeight * 0.08,
           position: 'absolute',
           borderTopLeftRadius: (windowHeight + windowWidth) * 0.03,
           borderTopRightRadius: (windowHeight + windowWidth) * 0.03,
           shadowColor: '#000',
           shadowOffset: {
             width: 0,
-            height: 10,
+            height: 15,
           },
-          shadowOpacity: 0.05,
-          shadowRadius: 20,
-          elevation: 20,
+          shadowOpacity: 0.5,
+          shadowRadius: 25,
+          elevation: 30,
         },
       }}>
       <Tab.Screen

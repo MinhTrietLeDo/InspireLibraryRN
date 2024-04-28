@@ -17,6 +17,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {CommonActions} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
+import CustomButton from '../customComponent/customButton';
 
 const LoginScreen = ({navigation}) => {
   const [username, setUsername] = useState('');
@@ -25,6 +26,7 @@ const LoginScreen = ({navigation}) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isRemember, setIsRemember] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const autofillCredentials = async () => {
@@ -42,11 +44,71 @@ const LoginScreen = ({navigation}) => {
     };
 
     autofillCredentials();
+
+    // checkFirebaseAuthAvailability()
   }, []);
 
-  const loginFunction = async () => {
+  // CHECK FIREBASE
+  const checkFirebaseAuthAvailability = async () => {
     try {
-      // setIsLoading(true);
+      const testAuth = await auth().signInAnonymously();
+      await auth().signOut();
+      console.log('Firebase Auth is available.', testAuth);
+      return true;
+    } catch (error) {
+      console.error('Firebase Auth is not available:', error);
+      return false;
+    }
+  };
+
+  const validateEmail = username => {
+    console.log('AAAYTFAHGFSĐ', username);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (emailRegex.test(username)) {
+      return {valid: true, message: 'Email is valid.'};
+    } else {
+      return {valid: false, message: 'Please enter a valid email address.'};
+    }
+  };
+
+  const validatePassword = password => {
+    const minLength = 8;
+    const specialCharRegex = /[ `!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/;
+
+    if (password.length < minLength) {
+      return {
+        valid: false,
+        message: `Password must be at least ${minLength} characters long.`,
+      };
+    }
+
+    if (!specialCharRegex.test(password)) {
+      return {
+        valid: false,
+        message: `Password must contain at least one special character.`,
+      };
+    }
+
+    return {valid: true, message: 'Password is valid.'};
+  };
+
+  const loginFunction = async () => {
+    const emailValidation = validateEmail(username);
+    if (!emailValidation.valid) {
+      setErrorMessage(emailValidation.message);
+      return;
+    }
+
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.valid) {
+      setErrorMessage(passwordValidation.message);
+      return;
+    }
+    console.log(emailValidation, passwordValidation);
+
+    try {
+      setIsLoading(true);
       const userCredential = await auth().signInWithEmailAndPassword(
         username,
         password,
@@ -63,9 +125,7 @@ const LoginScreen = ({navigation}) => {
       if (error.code === 'auth/invalid-credential') {
         setErrorMessage('Wrong password!');
       } else if (error.code === 'auth/too-many-requests') {
-        setErrorMessage(
-          'Too many unsuccessful login. Please try again later!',
-        );
+        setErrorMessage('Too many unsuccessful login. Please try again later!');
       } else {
         setErrorMessage(
           'An unexpected error occurred. Please try again later.',
@@ -73,7 +133,7 @@ const LoginScreen = ({navigation}) => {
       }
       console.error('Login error:', error);
     } finally {
-      // setIsLoading(false); // Optional: manage loading state
+      setIsLoading(false)
     }
   };
 
@@ -181,7 +241,7 @@ const LoginScreen = ({navigation}) => {
           </TouchableOpacity>
         </View>
         <View style={{margin: 10}}>
-          <Button title="Login" onPress={() => loginFunction()} />
+          <CustomButton loading= {isLoading} title="Login" onPress={() => loginFunction()} />
         </View>
       </View>
       <View style={{flexDirection: 'row'}}>
@@ -232,6 +292,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-around',
     alignItems: 'center',
+    backgroundColor: 'white',
   },
   loginContainer: {
     marginTop: windowHeight * 0.01,
