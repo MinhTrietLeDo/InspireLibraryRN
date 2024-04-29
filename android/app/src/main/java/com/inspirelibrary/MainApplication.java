@@ -9,6 +9,8 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactNativeHost;
 import com.facebook.soloader.SoLoader;
 import java.util.List;
+import io.invertase.firebase.firestore.ReactNativeFirebaseFirestorePackage;
+import io.invertase.firebase.storage.ReactNativeFirebaseStoragePackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -21,6 +23,12 @@ public class MainApplication extends Application implements ReactApplication {
 
         @Override
         protected List<ReactPackage> getPackages() {
+          // return Arrays.asList(
+          //   new MainReactPackage(),
+          //   new ReactNativeFirebaseStoragePackage(),
+          //   new ReactNativeFirebaseFirestorePackage(),
+          // )
+
           @SuppressWarnings("UnnecessaryLocalVariable")
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
