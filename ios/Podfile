@@ -10,19 +10,17 @@ prepare_react_native_project!
 
 pod 'react-native-sqlite-storage', :path => '../node_modules/react-native-sqlite-storage'
 pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
-
-use_frameworks! :linkage => :static
 $RNFirebaseAsStaticFramework = true
 
-pod 'Firebase', :modular_headers => true
-pod 'FirebaseCoreInternal', :modular_headers => true
-pod 'GoogleUtilities', :modular_headers => true
-pod 'FirebaseCore', :modular_headers => true
-pod 'FirebaseCoreExtension', :modular_headers => true
-pod 'FirebaseInstallations', :modular_headers => true
-pod 'FirebaseFirestoreInternal', :modular_headers => true
-pod 'FirebaseAppCheckInterop', :modular_headers => true
-pod 'FirebaseAuthInterop', :modular_headers => true
+# pod 'Firebase', :modular_headers => true
+# pod 'FirebaseCoreInternal', :modular_headers => true
+# pod 'GoogleUtilities', :modular_headers => true
+# pod 'FirebaseCore', :modular_headers => true
+# pod 'FirebaseCoreExtension', :modular_headers => true
+# pod 'FirebaseInstallations', :modular_headers => true
+# pod 'FirebaseFirestoreInternal', :modular_headers => true
+# pod 'FirebaseAppCheckInterop', :modular_headers => true
+# pod 'FirebaseAuthInterop', :modular_headers => true
 
 
 # If you are using a `react-native-flipper` your iOS build will fail when `NO_FLIPPER=1` is set.
@@ -47,6 +45,8 @@ target 'InspireLibrary' do
 
   # Flags change depending on the env values.
   flags = get_default_flags()
+
+  use_frameworks! :linkage => :static
 
   use_react_native!(
     :path => config[:reactNativePath],
