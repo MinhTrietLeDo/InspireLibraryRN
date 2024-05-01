@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -12,16 +12,48 @@ import {
 } from 'react-native';
 import {sizeText, windowHeight, windowWidth} from '../../config/courseStyle';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import auth from '@react-native-firebase/auth';
 
 const HomeScreen = ({navigation}) => {
   const categories = ['Self-help', 'Novel', 'Science', 'Romance', 'Crime'];
 
   const [searchInput, setSearchInput] = useState('');
   const [activeTab, setActiveTab] = useState(categories[0]);
+  const [displayName, setDisplayName] = useState('User');
   const books = [{id: '1', title: 'Atomic Habits', author: 'James Clear'}];
+
+  useEffect(() => {
+    getCurrentUserDetails();
+  }, []);
+
+  const getCurrentUserDetails = () => {
+    const unsubscribe = auth().onAuthStateChanged(user => {
+      if (user) {
+        console.log('Auth State:', user.email, user.displayName);
+        if (user.displayName === null) {
+          // console.log('NULL');
+          setDisplayName(user.email);
+        } else {
+          setDisplayName(user.displayName);
+        }
+      } else {
+        console.log('User has signed out or no user.');
+      }
+    });
+
+    return () => unsubscribe();
+  };
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.welcomeText}>
+        <Text style={{fontSize: sizeText.h26, fontWeight: 'bold'}}>
+          Welcome back, {displayName}!
+        </Text>
+        <Text style={{fontSize: sizeText.h40, fontWeight: 'bold'}}>
+          What do you want to read today?
+        </Text>
+      </View>
       <View style={styles.subContainer}>
         <View style={styles.searchContainer}>
           <Ionicons name="search" size={(windowHeight + windowWidth) * 0.02} />
@@ -34,22 +66,27 @@ const HomeScreen = ({navigation}) => {
           />
         </View>
         <View style={styles.scrollViewContainer}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.tabsContainer}>
-            {categories.map((category, index) => (
-              <TouchableOpacity
-                key={category}
-                style={[styles.tab, activeTab === category && styles.activeTab]}
-                onPress={() => setActiveTab(category)}>
-                <Text style={styles.tabText}>{category}</Text>
-                {activeTab === category && (
-                  <View style={styles.activeTabIndicator} />
-                )}
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
+          <View style={styles.tagContainer}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.tabsContainer}>
+              {categories.map((category, index) => (
+                <TouchableOpacity
+                  key={category}
+                  style={[
+                    styles.tab,
+                    activeTab === category && styles.activeTab,
+                  ]}
+                  onPress={() => setActiveTab(category)}>
+                  <Text style={styles.tabText}>{category}</Text>
+                  {activeTab === category && (
+                    <View style={styles.activeTabIndicator} />
+                  )}
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
         </View>
 
         <View style={styles.booksContainer}>
@@ -60,6 +97,9 @@ const HomeScreen = ({navigation}) => {
             </Text>
             <View>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <View>
+                  <Text>123</Text>
+                </View>
                 <View>
                   <Text>123</Text>
                 </View>
@@ -75,6 +115,9 @@ const HomeScreen = ({navigation}) => {
             </Text>
             <View>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <View>
+                  <Text>123</Text>
+                </View>
                 <View>
                   <Text>123</Text>
                 </View>
@@ -98,7 +141,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   subContainer: {
-    width: windowWidth * 0.9,
+    // width: windowWidth * 0.99,
     maxHeight: windowHeight * 0.9,
   },
   searchContainer: {
@@ -138,9 +181,14 @@ const styles = StyleSheet.create({
   scrollViewContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
+    alignItems: 'center',
+  },
+  tagContainer: {
+    paddingLeft: windowWidth * 0.02,
+    paddingRight: windowWidth * 0.02,
   },
   booksContainer: {
-    height: windowHeight * 0.5,
+    height: windowHeight * 0.8,
     backgroundColor: 'white',
     margin: (windowHeight + windowWidth) * 0.01,
     padding: 5,
@@ -163,6 +211,7 @@ const styles = StyleSheet.create({
   },
   tabsContainer: {
     flexDirection: 'row',
+    alignContent: 'center',
   },
   tab: {
     paddingHorizontal: 16,

@@ -13,6 +13,7 @@ import {windowHeight, windowWidth} from '../../config/courseStyle';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 import CustomButton from '../customComponent/customButton';
 
 const CreateAccScreen = ({navigation}) => {
@@ -24,6 +25,13 @@ const CreateAccScreen = ({navigation}) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {}, []);
+
+  const createUserProfile = async user => {
+    return await firestore().collection('users').doc(user.uid).set({
+      email: user.email,
+      createdAt: firestore.FieldValue.serverTimestamp(),
+    });
+  };
 
   const handleRegister = async () => {
     const emailValidation = validateEmail(username);
@@ -52,6 +60,8 @@ const CreateAccScreen = ({navigation}) => {
         username,
         password,
       );
+      const {user} = result;
+      await createUserProfile(user);
       console.log('Firebase user creation result:', result);
       Alert.alert(
         'Account Created',
