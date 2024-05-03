@@ -25,34 +25,26 @@ const CustomButton = ({onPress, title, loading}) => {
 
 export default CustomButton;
 
-export const ReadButton = ({onPress, title}) => {
+export const ReadButton = ({onPress, title, loading}) => {
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      style={styles.readButton}
-      >
-      {/* {loading ? (
+    <TouchableOpacity onPress={onPress} style={styles.readButton}>
+      {loading ? (
         <ActivityIndicator size="small" color="#FFFFFF" />
       ) : (
-        <Text style={styles.text}>{title}</Text>
-      )} */}
-      <Text style={styles.text2}>{title}</Text>
+        <Text style={styles.text2}>{title}</Text>
+      )}
     </TouchableOpacity>
   );
 };
 
-export const AddToFavButton = ({onPress, title}) => {
+export const AddToFavButton = ({onPress, title, loading}) => {
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      style={styles.addToFavButton}
-      >
-      {/* {loading ? (
+    <TouchableOpacity onPress={onPress} style={styles.addToFavButton}>
+      {loading ? (
         <ActivityIndicator size="small" color="#FFFFFF" />
       ) : (
-        <Text style={styles.text}>{title}</Text>
-      )} */}
-      <Text style={styles.text2}>{title}</Text>
+        <Text style={styles.text2}>{title}</Text>
+      )}
     </TouchableOpacity>
   );
 };
@@ -74,24 +66,26 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     textAlign: 'center',
     fontSize: sizeText.h26,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
-  readButton:{
+  readButton: {
     backgroundColor: '#D45555',
     borderRadius: 5,
     padding: (windowHeight + windowWidth) * 0.012,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    width: windowWidth*0.35
+    width: windowWidth * 0.4,
+    maxHeight: windowHeight*0.08
   },
-  addToFavButton:{
+  addToFavButton: {
     backgroundColor: 'black',
     borderRadius: 5,
     padding: (windowHeight + windowWidth) * 0.012,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    width: windowWidth*0.35
-  }
+    width: windowWidth * 0.4,
+    maxHeight: windowHeight*0.08
+  },
 });

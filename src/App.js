@@ -5,6 +5,7 @@ import LoginScreen from './component/screen/loginScreen';
 import CreateAccScreen from './component/screen/createAccScreen';
 import DrawerTab from './component/navigation/drawerNavigation';
 import ViewBooksScreen from './component/screen/viewBookScreen';
+import ReadBookScreen from './component/screen/readBookScreen';
 
 const Stack = createStackNavigator();
 
@@ -44,6 +45,16 @@ const RootStack = () => {
           <Stack.Screen
             name="BookDetails"
             component={ViewBooksScreen}
+            options={{
+              // headerBackVisible: false,
+              // headerShown: false,
+              title: 'Details',
+              headerTitleAlign: 'center',
+            }}
+          />
+          <Stack.Screen
+            name="ReadBook"
+            component={ReadBookScreen}
             options={{
               // headerBackVisible: false,
               // headerShown: false,

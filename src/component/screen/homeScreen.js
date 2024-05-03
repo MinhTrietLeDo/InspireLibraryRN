@@ -22,7 +22,6 @@ import {
 } from '../../config/request';
 
 const HomeScreen = ({navigation}) => {
-  // const categories = ['Self-help', 'Novel', 'Science', 'Romance', 'Crime'];
   const [categories, setCategories] = useState([]);
   const [activeTab, setActiveTab] = useState('');
 
@@ -31,8 +30,6 @@ const HomeScreen = ({navigation}) => {
   const [pdfs, setPdfs] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-
-  // const [selectedCategory, setSelectedCategory] = useState();
 
   useEffect(() => {
     getCurrentUserDetails();

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -8,18 +8,26 @@ import {
   ActivityIndicator,
   Image,
   ScrollView,
+  RefreshControl,
+  Alert,
 } from 'react-native';
 import storage from '@react-native-firebase/storage';
 import {utils} from '@react-native-firebase/app';
-import {fetchSingleBookDetails} from '../../config/request';
+import {
+  fetchSingleBookDetails,
+  handleAddToFavorites,
+  checkIfFavorite,
+} from '../../config/request';
 import {sizeText, windowHeight, windowWidth} from '../../config/courseStyle';
-import { AddToFavButton, ReadButton } from '../customComponent/customButton';
+import {AddToFavButton, ReadButton} from '../customComponent/customButton';
 
-const ViewBooksScreen = ({route}) => {
+const ViewBooksScreen = ({route, navigation}) => {
   //   const [filePath, setFilePath] = useState('src/banners/1.jpeg');
   const {bookId} = route.params;
   const [pdfDetails, setPdfDetails] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,10 +41,39 @@ const ViewBooksScreen = ({route}) => {
     };
 
     fetchData();
+    checkIfFavorite(bookId, setIsFavorite, setLoading);
   }, [bookId]);
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
+
+  const addToFavorites = async () => {
+    const result = await handleAddToFavorites(
+      bookId,
+      setIsFavorite,
+      setLoading,
+    );
+    console.log(result);
+    if (result.message === 'PDF added to favorites') {
+      Alert.alert('Alert', 'Added to favorite!', [
+        {
+          text: 'OK',
+          onPress: () => checkIfFavorite(bookId, setIsFavorite, setLoading),
+        },
+      ]);
+    }
+    if (result.message === 'PDF removed from favorites') {
+      Alert.alert('Alert', 'Removed from favorite!', [
+        {
+          text: 'OK',
+          onPress: () => checkIfFavorite(bookId, setIsFavorite, setLoading),
+        },
+      ]);
+    } else {
+      // alert(result.message);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.mainContainer}>
@@ -53,19 +90,37 @@ const ViewBooksScreen = ({route}) => {
         </View>
 
         <View style={styles.scrollContain}>
-          <ScrollView>
-            <View>
-              <Text>{pdfDetails.summary}</Text>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.BasicContainer}>
+              <View style={styles.TagsAndDate}>
+                <Text>Publish Date: </Text>
+                <Text>{pdfDetails.publishDate}</Text>
+              </View>
+
+              <View style={styles.TagsAndDate}>
+                <Text>Category: </Text>
+                <Text>{pdfDetails.category}</Text>
+              </View>
+            </View>
+            <View style={styles.SummaryContainer}>
+              <Text style={{fontSize: sizeText.h40, fontWeight: 'bold'}}>
+                Summary:
+              </Text>
+              <Text style={{fontSize: sizeText.h26, textAlign: 'justify', padding:5}}>{pdfDetails.summary}</Text>
             </View>
           </ScrollView>
         </View>
 
         <View style={styles.Buttons}>
-          <ReadButton
-            title='Read'
+          <ReadButton 
+          title="Read" 
+          loading={loading}  
+          onPress={() => navigation.navigate('ReadBook', {bookURL: pdfDetails.pdfUrl})}
           />
-          <AddToFavButton 
-            title= 'Add To Favorite'
+          <AddToFavButton
+            title={isFavorite ? 'Remove from Favorite' : 'Add to Favorite'}
+            onPress={() => addToFavorites()}
+            loading={loading}
           />
         </View>
       </View>
@@ -84,11 +139,11 @@ const styles = StyleSheet.create({
     marginTop: windowHeight * 0.01,
     width: windowWidth * 0.9,
     // backgroundColor: 'black',
-    height: windowHeight*0.89
+    height: windowHeight * 0.89,
   },
   image: {
-    width: windowWidth * 0.55,
-    height: windowHeight * 0.35,
+    width: windowWidth * 0.5,
+    height: windowHeight * 0.3,
     marginVertical: (windowHeight + windowWidth) * 0.005,
     borderRadius: (windowHeight + windowWidth) * 0.01,
   },
@@ -111,7 +166,7 @@ const styles = StyleSheet.create({
     fontSize: sizeText.h30,
   },
   scrollContain: {
-    height: windowHeight * 0.38,
+    height: windowHeight * 0.41,
     backgroundColor: 'white',
     marginBottom: windowHeight * 0.01,
     marginTop: windowHeight * 0.01,
@@ -129,14 +184,28 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderColor: 'transparent',
   },
-  Buttons:{
-    flexDirection: 'row', 
+  Buttons: {
+    flexDirection: 'row',
     justifyContent: 'space-around',
     bottom: 0,
     position: 'absolute',
     left: 0,
-    right: 0
-  }
+    right: 0,
+  },
+  BasicContainer: {
+    // flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    // backgroundColor: 'black',
+    width: windowWidth*0.85,
+    alignContent: 'center',
+    alignSelf: 'center',
+  },
+  TagsAndDate: {
+    flexDirection: 'row',
+  },
+  SummaryContainer: {
+    marginTop: windowHeight * 0.01,
+  },
 });
 
 export default ViewBooksScreen;
