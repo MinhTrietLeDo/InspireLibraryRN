@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {
   View,
   StyleSheet,
@@ -9,28 +9,63 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
+  FlatList,
+  RefreshControl,
 } from 'react-native';
 import {sizeText, windowHeight, windowWidth} from '../../config/courseStyle';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import auth from '@react-native-firebase/auth';
+import {
+  fetchCategories,
+  fetchPdfMetadata,
+  handleSearch,
+} from '../../config/request';
 
 const HomeScreen = ({navigation}) => {
-  const categories = ['Self-help', 'Novel', 'Science', 'Romance', 'Crime'];
+  // const categories = ['Self-help', 'Novel', 'Science', 'Romance', 'Crime'];
+  const [categories, setCategories] = useState([]);
+  const [activeTab, setActiveTab] = useState('');
 
   const [searchInput, setSearchInput] = useState('');
-  const [activeTab, setActiveTab] = useState(categories[0]);
   const [displayName, setDisplayName] = useState('User');
-  const books = [{id: '1', title: 'Atomic Habits', author: 'James Clear'}];
+  const [pdfs, setPdfs] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+
+  // const [selectedCategory, setSelectedCategory] = useState();
 
   useEffect(() => {
     getCurrentUserDetails();
+    fetchPdfMetadata().then(setPdfs);
+    // fetchCategories().then(setCategories);
+    loadCategories();
+  }, []);
+
+  const loadCategories = async () => {
+    const fetchedCategories = await fetchCategories();
+    setCategories(fetchedCategories);
+    if (fetchedCategories.length > 0) {
+      setActiveTab(fetchedCategories[0]); // Set the first category as the active tab initially
+    }
+  };
+
+  const onRefresh = useCallback(() => {
+    console.log('MMMMMMMMMMHHHHHM, REFRESHING!!');
+    setRefreshing(true);
+    getCurrentUserDetails();
+    fetchPdfMetadata().then(setPdfs);
+    loadCategories();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
   }, []);
 
   const getCurrentUserDetails = () => {
     const unsubscribe = auth().onAuthStateChanged(user => {
+      console.log('123123123123123123123123', user);
       if (user) {
         console.log('Auth State:', user.email, user.displayName);
-        if (user.displayName === null) {
+        if (user.name === null) {
           // console.log('NULL');
           setDisplayName(user.email);
         } else {
@@ -46,88 +81,138 @@ const HomeScreen = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.welcomeText}>
-        <Text style={{fontSize: sizeText.h26, fontWeight: 'bold'}}>
-          Welcome back, {displayName}!
-        </Text>
-        <Text style={{fontSize: sizeText.h40, fontWeight: 'bold'}}>
-          What do you want to read today?
-        </Text>
-      </View>
-      <View style={styles.subContainer}>
-        <View style={styles.searchContainer}>
-          <Ionicons name="search" size={(windowHeight + windowWidth) * 0.02} />
-          <TextInput
-            placeholder="Search ..."
-            autoCapitalize="none"
-            onChangeText={searchInput => setSearchInput(searchInput)}
-            value={searchInput}
-            style={styles.textInput}
-          />
+      <ScrollView
+        scrollEnabled={false}
+        style={{width: '100%', maxHeight: windowHeight * 0.9}}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
+        <View style={styles.welcomeText}>
+          <Text style={{fontSize: sizeText.h26, fontWeight: 'bold'}}>
+            Welcome back, {displayName}!
+          </Text>
+          <Text style={{fontSize: sizeText.h40, fontWeight: 'bold'}}>
+            What do you want to read today?
+          </Text>
         </View>
-        <View style={styles.scrollViewContainer}>
-          <View style={styles.tagContainer}>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={styles.tabsContainer}>
-              {categories.map((category, index) => (
-                <TouchableOpacity
-                  key={category}
-                  style={[
-                    styles.tab,
-                    activeTab === category && styles.activeTab,
-                  ]}
-                  onPress={() => setActiveTab(category)}>
-                  <Text style={styles.tabText}>{category}</Text>
-                  {activeTab === category && (
-                    <View style={styles.activeTabIndicator} />
+        <View style={styles.subContainer}>
+          <View style={styles.searchContainer}>
+            <Ionicons
+              name="search"
+              size={(windowHeight + windowWidth) * 0.02}
+            />
+            <TextInput
+              placeholder="Search ..."
+              autoCapitalize="none"
+              onChangeText={searchInput => setSearchInput(searchInput)}
+              value={searchInput}
+              style={styles.textInput}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+            />
+            {isFocused && (
+              <TouchableOpacity>
+                <Text>123</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+          <View style={styles.scrollViewContainer}>
+            <View style={styles.tagContainer}>
+              <FlatList
+                data={categories}
+                keyExtractor={(item, index) => index.toString()}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                style={styles.tabsContainer}
+                renderItem={({item: categories}) => {
+                  console.log('Category item:', categories);
+                  return (
+                    <TouchableOpacity
+                      key={categories} // This also needs to be specific if `category` is an object
+                      style={[
+                        styles.tab,
+                        activeTab === categories && styles.activeTab,
+                      ]}
+                      onPress={() => setActiveTab(categories)}>
+                      <Text style={styles.tabText}>{categories}</Text>
+                      {activeTab === categories && (
+                        <View style={styles.activeTabIndicator} />
+                      )}
+                    </TouchableOpacity>
+                  );
+                }}
+              />
+            </View>
+          </View>
+
+          <View style={styles.booksContainer}>
+            <View style={styles.bookScroll}>
+              {/* WHAT'S NEW */}
+              <Text style={{fontSize: sizeText.h40, fontWeight: 'bold'}}>
+                WHAT'S NEW
+              </Text>
+              <View>
+                <FlatList
+                  data={pdfs}
+                  // numColumns={4}
+                  keyExtractor={item => item.id}
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}
+                  renderItem={({item}) => (
+                    <TouchableOpacity
+                      style={styles.itemContainer}
+                      onPress={
+                        // () => {}
+                        () => navigation.navigate('BookDetails', {bookId: item.id})
+                      }>
+                      <View
+                        style={{alignContent: 'center', alignItems: 'center'}}>
+                        <View style={styles.coverContainer}>
+                          <Image
+                            source={{uri: item.coverImageUrl}}
+                            style={styles.image}
+                            resizeMode="cover"
+                          />
+                        </View>
+                        <Text style={{fontSize: sizeText.h30}}>
+                          {item.title}
+                        </Text>
+                        <Text>{item.author}</Text>
+                      </View>
+
+                      {/* <Text>Publish Date: {item.publishDate}</Text> */}
+                    </TouchableOpacity>
                   )}
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
+                  ListHeaderComponent={() => (
+                    <View>{/* <Text>Header Content</Text> */}</View>
+                  )}
+                  ListFooterComponent={() => (
+                    <View>{/* <Text>Footer Content</Text> */}</View>
+                  )}
+                />
+              </View>
+              {/* WHAT'S NEW */}
+
+              <Text>========================</Text>
+
+              {/* MOST POPULAR */}
+              <Text style={{fontSize: sizeText.h40, fontWeight: 'bold'}}>
+                MOST POPULAR
+              </Text>
+              <View>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                  <View>
+                    <Text>123</Text>
+                  </View>
+                  <View>
+                    <Text>123</Text>
+                  </View>
+                </ScrollView>
+              </View>
+            </View>
           </View>
         </View>
-
-        <View style={styles.booksContainer}>
-          <ScrollView style={styles.bookScroll}>
-            {/* WHAT'S NEW */}
-            <Text style={{fontSize: sizeText.h40, fontWeight: 'bold'}}>
-              WHAT'S NEW
-            </Text>
-            <View>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                <View>
-                  <Text>123</Text>
-                </View>
-                <View>
-                  <Text>123</Text>
-                </View>
-              </ScrollView>
-            </View>
-            {/* WHAT'S NEW */}
-
-            <Text>========================</Text>
-
-            {/* MOST POPULAR */}
-            <Text style={{fontSize: sizeText.h40, fontWeight: 'bold'}}>
-              MOST POPULAR
-            </Text>
-            <View>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                <View>
-                  <Text>123</Text>
-                </View>
-                <View>
-                  <Text>123</Text>
-                </View>
-              </ScrollView>
-            </View>
-            {/* MOST POPULAR */}
-            <Text>========================</Text>
-          </ScrollView>
-        </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -153,9 +238,10 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     margin: 10,
+    justifyContent: 'space-evenly',
   },
   textInput: {
-    width: '90%',
+    // width: '50%',
     flex: 1,
     backgroundColor: '#F0F0F0',
     color: '#424242',
@@ -233,5 +319,33 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+  },
+  image: {
+    width: windowWidth * 0.2,
+    height: windowHeight * 0.1,
+    marginVertical: (windowHeight + windowWidth) * 0.005,
+    borderRadius: (windowHeight + windowWidth) * 0.01,
+  },
+  coverContainer: {
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 10,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+    alignItems: 'center',
+    overflow: 'hidden',
+    borderColor: 'white',
+    // backgroundColor: 'white',
+    margin: (windowHeight + windowWidth) * 0.01,
+    // padding: 5,
+    borderRadius: (windowHeight + windowWidth) * 0.01,
+    borderWidth: 0,
+  },
+  welcomeText: {
+    width: windowWidth * 0.6,
+    padding: (windowHeight + windowWidth) * 0.005,
   },
 });

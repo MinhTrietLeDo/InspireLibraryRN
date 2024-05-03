@@ -4,6 +4,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import LoginScreen from './component/screen/loginScreen';
 import CreateAccScreen from './component/screen/createAccScreen';
 import DrawerTab from './component/navigation/drawerNavigation';
+import ViewBooksScreen from './component/screen/viewBookScreen';
 
 const Stack = createStackNavigator();
 
@@ -36,6 +37,18 @@ const RootStack = () => {
             options={{
               headerBackVisible: false,
               headerShown: false,
+            }}
+          />
+        </Stack.Group>
+        <Stack.Group>
+          <Stack.Screen
+            name="BookDetails"
+            component={ViewBooksScreen}
+            options={{
+              // headerBackVisible: false,
+              // headerShown: false,
+              title: 'Details',
+              headerTitleAlign: 'center',
             }}
           />
         </Stack.Group>

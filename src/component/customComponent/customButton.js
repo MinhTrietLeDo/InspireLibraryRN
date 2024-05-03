@@ -6,7 +6,7 @@ import {
   View,
   Text,
 } from 'react-native';
-import {windowHeight, windowWidth} from '../../config/courseStyle';
+import {sizeText, windowHeight, windowWidth} from '../../config/courseStyle';
 
 const CustomButton = ({onPress, title, loading}) => {
   return (
@@ -25,6 +25,38 @@ const CustomButton = ({onPress, title, loading}) => {
 
 export default CustomButton;
 
+export const ReadButton = ({onPress, title}) => {
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      style={styles.readButton}
+      >
+      {/* {loading ? (
+        <ActivityIndicator size="small" color="#FFFFFF" />
+      ) : (
+        <Text style={styles.text}>{title}</Text>
+      )} */}
+      <Text style={styles.text2}>{title}</Text>
+    </TouchableOpacity>
+  );
+};
+
+export const AddToFavButton = ({onPress, title}) => {
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      style={styles.addToFavButton}
+      >
+      {/* {loading ? (
+        <ActivityIndicator size="small" color="#FFFFFF" />
+      ) : (
+        <Text style={styles.text}>{title}</Text>
+      )} */}
+      <Text style={styles.text2}>{title}</Text>
+    </TouchableOpacity>
+  );
+};
+
 const styles = StyleSheet.create({
   button: {
     padding: (windowHeight + windowWidth) * 0.012,
@@ -38,4 +70,28 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     textAlign: 'center',
   },
+  text2: {
+    color: '#FFFFFF',
+    textAlign: 'center',
+    fontSize: sizeText.h26,
+    fontWeight: 'bold'
+  },
+  readButton:{
+    backgroundColor: '#D45555',
+    borderRadius: 5,
+    padding: (windowHeight + windowWidth) * 0.012,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: windowWidth*0.35
+  },
+  addToFavButton:{
+    backgroundColor: 'black',
+    borderRadius: 5,
+    padding: (windowHeight + windowWidth) * 0.012,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: windowWidth*0.35
+  }
 });

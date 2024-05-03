@@ -13,6 +13,7 @@ import HomeBottomTab from './homeBottomTab';
 import auth from '@react-native-firebase/auth';
 import {CommonActions, useNavigation} from '@react-navigation/native';
 import ProfileScreen from '../screen/profileScreen';
+import TestUpload from '../screen/adminUpload';
 
 const Drawer = createDrawerNavigator();
 
@@ -92,6 +93,22 @@ const DrawerTab = ({navigation}) => {
           },
           // headerShown: false,
           title: 'Profile',
+          headerTitleAlign: 'center',
+          headerTitle: '',
+          drawerIcon: () => (
+            <Feather name="user" size={(windowHeight + windowWidth) * 0.02} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="TestUpload"
+        component={TestUpload}
+        options={{
+          headerStyle: {
+            backgroundColor: 'transparent',
+          },
+          // headerShown: false,
+          title: 'TestUpload',
           headerTitleAlign: 'center',
           headerTitle: '',
           drawerIcon: () => (

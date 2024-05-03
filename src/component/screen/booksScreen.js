@@ -5,7 +5,7 @@ import {utils} from '@react-native-firebase/app';
 import RNFS from 'react-native-fs';
 import requestStoragePermission from '../../config/request';
 
-const BooksScreen = () => {
+const BooksScreen = ({navigation}) => {
   //   const [filePath, setFilePath] = useState('src/banners/1.jpeg');
 
   useEffect(() => {
@@ -65,7 +65,6 @@ const BooksScreen = () => {
     <SafeAreaView style={styles.container}>
       <View>
         <Text>BOOKS</Text>
-        {/* <Button title="test upload" onPress={() => handleUpload()} /> */}
       </View>
     </SafeAreaView>
   );
