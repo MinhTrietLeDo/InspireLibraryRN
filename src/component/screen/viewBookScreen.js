@@ -151,9 +151,11 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     marginTop: windowHeight * 0.01,
-    width: windowWidth * 0.9,
+    width: windowWidth * 0.93,
     // backgroundColor: 'black',
-    height: windowHeight * 0.89,
+    // maxHeight: windowHeight * 0.85,
+    justifyContent: 'space-between',
+    overflow: 'hidden'
   },
   image: {
     width: windowWidth * 0.5,
@@ -201,12 +203,12 @@ const styles = StyleSheet.create({
   Buttons: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    position: 'absolute',
-    // bottom: Dimensions.get('window').height/100*5,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    // top:"100%",
+    // position: 'absolute',
+    // // bottom: Dimensions.get('window').height/100*5,
+    // left: 0,
+    // right: 0,
+    // bottom: 0,
+    // // top:"100%",
     overflow: "hidden"
   },
   BasicContainer: {

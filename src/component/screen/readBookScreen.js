@@ -1,10 +1,10 @@
 // import Pdf from 'react-native-pdf';
 import React, {useEffect, useState} from 'react';
-import {SafeAreaView} from 'react-native';
+import {Alert, SafeAreaView} from 'react-native';
 import storage from '@react-native-firebase/storage';
 import Pdf from 'react-native-pdf';
 
-const ReadBookScreen = ({route}) => {
+const ReadBookScreen = ({route, navigation}) => {
   const bookURL = route.params.bookURL;
   const [downloadURL, setDownloadURL] = useState('');
   const convertGsToHttps = async gsUrl => {
@@ -14,20 +14,24 @@ const ReadBookScreen = ({route}) => {
     }
 
     try {
-      const filePath = gsUrl.split('gs://')[1]; // Extract the path part from the GS URL
+      const filePath = gsUrl.split('gs://')[1];
       if (!filePath) {
         console.error('Invalid GS URL format');
-        return null; // Return null if the URL format is invalid
+        Alert.alert('Error', 'Please try again later!', [{
+            text: 'OK',
+            onPress: () => navigation.goBack(),
+        }]);
+        return null;
       }
 
-      const fileRef = storage().refFromURL(gsUrl); // Get a reference to the storage location
+      const fileRef = storage().refFromURL(gsUrl);
 
-      const downloadUrl = await fileRef.getDownloadURL(); // Retrieve the HTTPS URL
+      const downloadUrl = await fileRef.getDownloadURL();
       console.log('Download URL:', downloadUrl);
       return downloadUrl; // Return the HTTPS URL
     } catch (error) {
       console.error('Error getting download URL:', error);
-      return null; // Return null if there is an error fetching the URL
+      return null;
     }
   };
 
