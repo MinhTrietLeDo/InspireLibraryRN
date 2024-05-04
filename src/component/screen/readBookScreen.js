@@ -2,6 +2,7 @@
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native';
 import storage from '@react-native-firebase/storage';
+import Pdf from 'react-native-pdf';
 
 const ReadBookScreen = ({route}) => {
   const bookURL = route.params.bookURL;
@@ -47,18 +48,17 @@ const ReadBookScreen = ({route}) => {
   }, []);
 
   return (
-    <SafeAreaView>
-      {/* <Pdf
-        source={{uri: downloadURL}}
-        onLoadComplete={(numberOfPages, filePath) => {
-          console.log(`Number of pages: ${numberOfPages}`);
-        }}
-        onError={error => {
-          console.log(error);
-        }}
-        style={{flex: 1}}
-      /> */}
-    </SafeAreaView>
+    <Pdf
+      trustAllCerts={false}
+      source={{uri: downloadURL}}
+      onLoadComplete={(numberOfPages, filePath) => {
+        console.log(`Number of pages: ${numberOfPages}`);
+      }}
+      onError={error => {
+        console.log(error);
+      }}
+      style={{flex: 1}}
+    />
   );
 };
 

@@ -184,5 +184,3 @@ export const checkIfFavorite = async (bookId, setIsFavorite, setLoading) => {
     setLoading(false);
   }
 };
-
-export default requestStoragePermission;

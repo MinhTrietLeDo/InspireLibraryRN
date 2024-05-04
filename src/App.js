@@ -6,6 +6,7 @@ import CreateAccScreen from './component/screen/createAccScreen';
 import DrawerTab from './component/navigation/drawerNavigation';
 import ViewBooksScreen from './component/screen/viewBookScreen';
 import ReadBookScreen from './component/screen/readBookScreen';
+import { requestStoragePermission } from './config/request';
 
 const Stack = createStackNavigator();
 
@@ -38,6 +39,7 @@ const RootStack = () => {
             options={{
               headerBackVisible: false,
               headerShown: false,
+              title: '',
             }}
           />
         </Stack.Group>
@@ -69,6 +71,9 @@ const RootStack = () => {
 };
 
 const App = () => {
+  useEffect(() => {
+    requestStoragePermission()
+  }, [])
   return <RootStack />;
 };
 

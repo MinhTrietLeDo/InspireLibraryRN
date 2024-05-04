@@ -10,9 +10,8 @@ import {
   ScrollView,
   RefreshControl,
   Alert,
+  Dimensions
 } from 'react-native';
-import storage from '@react-native-firebase/storage';
-import {utils} from '@react-native-firebase/app';
 import {
   fetchSingleBookDetails,
   handleAddToFavorites,
@@ -78,44 +77,59 @@ const ViewBooksScreen = ({route, navigation}) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.mainContainer}>
         <View style={styles.coverImageContainer}>
-          <Image
-            source={{uri: pdfDetails.coverImageUrl}}
-            style={styles.image}
-            resizeMode="cover"
-          />
+          {pdfDetails && (
+            <Image
+              source={{uri: pdfDetails.coverImageUrl}}
+              style={styles.image}
+              resizeMode="cover"
+            />
+          )}
         </View>
-        <View style={styles.textHeader}>
-          <Text style={styles.header1}>{pdfDetails.title}</Text>
-          <Text style={styles.header2}>{pdfDetails.author}</Text>
-        </View>
+        {pdfDetails && (
+          <View style={styles.textHeader}>
+            <Text style={styles.header1}>{pdfDetails.title}</Text>
+            <Text style={styles.header2}>{pdfDetails.author}</Text>
+          </View>
+        )}
 
-        <View style={styles.scrollContain}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.BasicContainer}>
-              <View style={styles.TagsAndDate}>
-                <Text>Publish Date: </Text>
-                <Text>{pdfDetails.publishDate}</Text>
-              </View>
+        {pdfDetails && (
+          <View style={styles.scrollContain}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <View style={styles.BasicContainer}>
+                <View style={styles.TagsAndDate}>
+                  <Text>Publish Date: </Text>
+                  <Text>{pdfDetails.publishDate}</Text>
+                </View>
 
-              <View style={styles.TagsAndDate}>
-                <Text>Category: </Text>
-                <Text>{pdfDetails.category}</Text>
+                <View style={styles.TagsAndDate}>
+                  <Text>Category: </Text>
+                  <Text>{pdfDetails.category}</Text>
+                </View>
               </View>
-            </View>
-            <View style={styles.SummaryContainer}>
-              <Text style={{fontSize: sizeText.h40, fontWeight: 'bold'}}>
-                Summary:
-              </Text>
-              <Text style={{fontSize: sizeText.h26, textAlign: 'justify', padding:5}}>{pdfDetails.summary}</Text>
-            </View>
-          </ScrollView>
-        </View>
+              <View style={styles.SummaryContainer}>
+                <Text style={{fontSize: sizeText.h40, fontWeight: 'bold'}}>
+                  Summary:
+                </Text>
+                <Text
+                  style={{
+                    fontSize: sizeText.h26,
+                    textAlign: 'justify',
+                    padding: 5,
+                  }}>
+                  {pdfDetails.summary}
+                </Text>
+              </View>
+            </ScrollView>
+          </View>
+        )}
 
         <View style={styles.Buttons}>
-          <ReadButton 
-          title="Read" 
-          loading={loading}  
-          onPress={() => navigation.navigate('ReadBook', {bookURL: pdfDetails.pdfUrl})}
+          <ReadButton
+            title="Read"
+            loading={loading}
+            onPress={() =>
+              navigation.navigate('ReadBook', {bookURL: pdfDetails.pdfUrl})
+            }
           />
           <AddToFavButton
             title={isFavorite ? 'Remove from Favorite' : 'Add to Favorite'}
@@ -187,16 +201,19 @@ const styles = StyleSheet.create({
   Buttons: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    bottom: 0,
     position: 'absolute',
+    // bottom: Dimensions.get('window').height/100*5,
     left: 0,
     right: 0,
+    bottom: 0,
+    // top:"100%",
+    overflow: "hidden"
   },
   BasicContainer: {
     // flexDirection: 'row',
     justifyContent: 'space-evenly',
     // backgroundColor: 'black',
-    width: windowWidth*0.85,
+    width: windowWidth * 0.85,
     alignContent: 'center',
     alignSelf: 'center',
   },

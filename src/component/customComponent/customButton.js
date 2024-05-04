@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    width: windowWidth * 0.4,
+    width: windowWidth * 0.42,
     maxHeight: windowHeight*0.08
   },
   addToFavButton: {
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    width: windowWidth * 0.4,
+    width: windowWidth * 0.42,
     maxHeight: windowHeight*0.08
   },
 });
