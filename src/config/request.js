@@ -1,6 +1,7 @@
 import {PermissionsAndroid} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import {firebase} from '@react-native-firebase/app';
 
 export const requestStoragePermission = async () => {
   try {
@@ -96,10 +97,12 @@ export const fetchUserData = async () => {
 };
 
 export const handleSearch = async (searchQuery, setResults, setLoading) => {
+  console.log('searchQuery: ', searchQuery)
   if (searchQuery) {
-    setLoading(true); // Assuming you manage loading state outside
+    setLoading(true);
     try {
-      const querySnapshot = await firestore()
+      const querySnapshot = await firebase
+        .firestore()
         .collection('pdfs')
         .where('title', '>=', searchQuery)
         .where('title', '<=', searchQuery + '\uf8ff')
@@ -110,19 +113,18 @@ export const handleSearch = async (searchQuery, setResults, setLoading) => {
           id: doc.id,
           ...doc.data(),
         }));
-        setResults(fetchedResults); // Assuming you manage results state outside
+        setResults(fetchedResults);
       } else {
         console.log('No results found.');
         setResults([]);
       }
-      setLoading(false);
     } catch (error) {
       console.error('Search error:', error);
+    } finally {
       setLoading(false);
     }
   }
 };
-
 export const handleAddToFavorites = async bookId => {
   const userId = auth().currentUser.uid;
   if (!userId) {
@@ -168,19 +170,37 @@ export const checkIfFavorite = async (bookId, setIsFavorite, setLoading) => {
   }
 
   try {
-    const userFavoritesRef = firestore().collection('userFavorites').doc(userId);
+    const userFavoritesRef = firestore()
+      .collection('userFavorites')
+      .doc(userId);
     const doc = await userFavoritesRef.get();
 
     if (doc.exists) {
       const favorites = doc.data().favorites || [];
-      setIsFavorite(favorites.includes(bookId)); 
+      setIsFavorite(favorites.includes(bookId));
     } else {
       setIsFavorite(false);
     }
   } catch (error) {
     console.error('Failed to fetch favorites', error);
-    setIsFavorite(false); 
+    setIsFavorite(false);
   } finally {
     setLoading(false);
+  }
+};
+
+export const fetchPDFsFromCategory = async category => {
+  console.log('Category being queried:', category); // This will show what is being passed to the query
+  const firestore = firebase.firestore();
+
+  try {
+    const querySnapshot = await firestore
+      .collection('pdfs')
+      .where('category', '==', category)
+      .get();
+    // rest of the code
+  } catch (error) {
+    console.error('Failed to fetch PDFs by category:', error);
+    return [];
   }
 };
