@@ -8,22 +8,6 @@ require Pod::Executable.execute_command('node', ['-p',
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
 
-# pod 'react-native-sqlite-storage', :path => '../node_modules/react-native-sqlite-storage'
-pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
-pod 'react-native-blob-util', :path => '../node_modules/react-native-blob-util'
-$RNFirebaseAsStaticFramework = true
-
-# pod 'Firebase', :modular_headers => true
-# pod 'FirebaseCoreInternal', :modular_headers => true
-# pod 'GoogleUtilities', :modular_headers => true
-# pod 'FirebaseCore', :modular_headers => true
-# pod 'FirebaseCoreExtension', :modular_headers => true
-# pod 'FirebaseInstallations', :modular_headers => true
-# pod 'FirebaseFirestoreInternal', :modular_headers => true
-# pod 'FirebaseAppCheckInterop', :modular_headers => true
-# pod 'FirebaseAuthInterop', :modular_headers => true
-
-
 # If you are using a `react-native-flipper` your iOS build will fail when `NO_FLIPPER=1` is set.
 # because `react-native-flipper` depends on (FlipperKit,...) that will be excluded
 #
@@ -44,10 +28,25 @@ end
 target 'InspireLibrary' do
   config = use_native_modules!
 
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+  pod 'react-native-blob-util', :path => '../node_modules/react-native-blob-util'
+  pod 'RNFBApp', :path => '../node_modules/@react-native-firebase/app'
+
+  # pod 'Firebase', :modular_headers => true
+  # pod 'FirebaseCoreInternal', :modular_headers => true
+  # pod 'GoogleUtilities', :modular_headers => true
+  # pod 'FirebaseCore', :modular_headers => true
+  # pod 'FirebaseCoreExtension', :modular_headers => true
+  # pod 'FirebaseInstallations', :modular_headers => true
+  # pod 'FirebaseFirestoreInternal', :modular_headers => true
+  # pod 'FirebaseAppCheckInterop', :modular_headers => true
+  # pod 'FirebaseAuthInterop', :modular_headers => true
+
   # Flags change depending on the env values.
   flags = get_default_flags()
 
   use_frameworks! :linkage => :static
+  $RNFirebaseAsStaticFramework = true
 
   use_react_native!(
     :path => config[:reactNativePath],
@@ -76,5 +75,10 @@ target 'InspireLibrary' do
       :mac_catalyst_enabled => false
     )
     __apply_Xcode_12_5_M1_post_install_workaround(installer)
+    installer.pods_project.targets.each do |target|
+      if ['RNFBApp', 'RNFBMessaging'].include?(target.name)
+        target.add_system_framework(installer.pods_project.targets.find{|target| target.name == 'GoogleUtilities'})
+      end
+    end
   end
 end
