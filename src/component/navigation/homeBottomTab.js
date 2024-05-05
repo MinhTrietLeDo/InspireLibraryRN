@@ -58,7 +58,7 @@ const HomeBottomTab = () => {
           headerShown: false,
           headerTitleAlign: 'center',
           tabBarIcon: ({color, size}) => (
-            <Ionicons name="book-outline" color={color} size={size} />
+            <Ionicons name="bookmarks-outline" color={color} size={size} />
           ),
         }}
       />

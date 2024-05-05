@@ -1,6 +1,6 @@
 // import Pdf from 'react-native-pdf';
 import React, {useEffect, useState} from 'react';
-import {Alert, SafeAreaView} from 'react-native';
+import {Alert, SafeAreaView, View} from 'react-native';
 import storage from '@react-native-firebase/storage';
 import Pdf from 'react-native-pdf';
 
@@ -17,10 +17,12 @@ const ReadBookScreen = ({route, navigation}) => {
       const filePath = gsUrl.split('gs://')[1];
       if (!filePath) {
         console.error('Invalid GS URL format');
-        Alert.alert('Error', 'Please try again later!', [{
+        Alert.alert('Error', 'Please try again later!', [
+          {
             text: 'OK',
             onPress: () => navigation.goBack(),
-        }]);
+          },
+        ]);
         return null;
       }
 
@@ -52,17 +54,19 @@ const ReadBookScreen = ({route, navigation}) => {
   }, []);
 
   return (
-    <Pdf
-      trustAllCerts={false}
-      source={{uri: downloadURL}}
-      onLoadComplete={(numberOfPages, filePath) => {
-        console.log(`Number of pages: ${numberOfPages}`);
-      }}
-      onError={error => {
-        console.log(error);
-      }}
-      style={{flex: 1}}
-    />
+    // <View style={{flex: 1}}>
+      <Pdf
+        trustAllCerts={false}
+        source={{uri: downloadURL}}
+        onLoadComplete={(numberOfPages, filePath) => {
+          console.log(`Number of pages: ${numberOfPages}`);
+        }}
+        onError={error => {
+          console.log(error);
+        }}
+        style={{flex: 1}}
+      />
+    // </View>
   );
 };
 

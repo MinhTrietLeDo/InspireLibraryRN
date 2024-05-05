@@ -57,18 +57,15 @@ const HomeScreen = ({navigation}) => {
     const fetchedCategories = await fetchCategories();
     console.log('Fetched categories:', fetchedCategories);
 
-    // Map fetched category strings to objects with a 'name' property
     const categoriesAsObjects = fetchedCategories.map(category => ({
       name: category,
     }));
 
-    // Prepend the "All" category to the transformed list
     const allCategories = [{name: 'All'}, ...categoriesAsObjects];
     setCategories(allCategories);
 
-    // Set "All" as the active tab initially
     if (allCategories.length > 0) {
-      setActiveTab(allCategories[0]); // Ensure this is an object with a 'name' property
+      setActiveTab(allCategories[0]);
     } else {
       console.error('No categories fetched or first category has no name');
     }

@@ -204,3 +204,35 @@ export const fetchPDFsFromCategory = async category => {
     return [];
   }
 };
+
+
+export const fetchFavorites = async () => {
+  const userId = auth().currentUser?.uid; // Ensure the user is logged in
+  if (!userId) {
+    console.error('No user logged in.');
+    setLoading(false);
+    return;
+  }
+
+  const userFavoritesRef = firestore().collection('userFavorites').doc(userId);
+
+    const doc = await userFavoritesRef.get();
+    if (doc.exists) {
+      const favoriteIds = doc.data().favorites;
+      return await fetchFavoritesBooksList(favoriteIds);
+    } else {
+      return [];
+    }
+};
+
+
+export const fetchFavoritesBooksList = async (ids) => {
+  const books = [];
+  for (const id of ids) {
+    const pdfDoc = await firestore().collection('pdfs').doc(id).get();
+    if (pdfDoc.exists) {
+      books.push({ id: pdfDoc.id, ...pdfDoc.data() });
+    }
+  }
+  return books;
+};
