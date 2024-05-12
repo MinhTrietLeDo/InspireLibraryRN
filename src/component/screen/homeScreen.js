@@ -310,12 +310,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     overflow: 'hidden',
     borderColor: 'transparent',
-    // backgroundColor: 'black',
   },
   bookScroll: {
     width: '100%',
     textAlign: 'center',
-    // height: windowHeight*0.5
   },
   tabsContainer: {
     flexDirection: 'row',
@@ -326,15 +324,13 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   activeTab: {
-    // borderBottomWidth: 2,
-    // borderBottomColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'center',
   },
   tabText: {
     textAlign: 'center',
     width: windowWidth * 0.2,
-    height: windowHeight * 0.04,
+    height: windowHeight * 0.05,
     fontSize: sizeText.h24,
     justifyContent: 'center',
     alignItems: 'center',

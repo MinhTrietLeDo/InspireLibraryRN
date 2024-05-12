@@ -152,10 +152,9 @@ const styles = StyleSheet.create({
   mainContainer: {
     marginTop: windowHeight * 0.01,
     width: windowWidth * 0.93,
-    // backgroundColor: 'black',
-    // maxHeight: windowHeight * 0.85,
-    justifyContent: 'space-between',
-    overflow: 'hidden'
+    height: windowHeight*0.9,
+    justifyContent: 'space-evenly',
+    // backgroundColor: 'black'
   },
   image: {
     width: windowWidth * 0.5,
@@ -177,12 +176,13 @@ const styles = StyleSheet.create({
   header1: {
     fontSize: sizeText.h36,
     fontWeight: 'bold',
+    textAlign: 'center'
   },
   header2: {
     fontSize: sizeText.h30,
   },
   scrollContain: {
-    height: windowHeight * 0.41,
+    height: windowHeight * 0.36,
     backgroundColor: 'white',
     marginBottom: windowHeight * 0.01,
     marginTop: windowHeight * 0.01,
@@ -204,11 +204,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     // position: 'absolute',
-    // // bottom: Dimensions.get('window').height/100*5,
     // left: 0,
     // right: 0,
-    // bottom: 0,
-    // // top:"100%",
+    // top:"100%",
     overflow: "hidden"
   },
   BasicContainer: {
