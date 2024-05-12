@@ -103,12 +103,7 @@ const HomeScreen = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        scrollEnabled={false}
-        style={{width: '100%', maxHeight: windowHeight * 0.9}}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }>
+      <View style={{width: '100%', maxHeight: windowHeight * 0.9}}>
         <View style={styles.welcomeText}>
           <Text style={{fontSize: sizeText.h26, fontWeight: 'bold'}}>
             Welcome back, {displayName}!
@@ -188,22 +183,21 @@ const HomeScreen = ({navigation}) => {
               <Text style={{fontSize: sizeText.h40, fontWeight: 'bold'}}>
                 WHAT'S NEW
               </Text>
-              <View>
+              <View style={{maxHeight: windowHeight * 0.48}}>
                 {loading ? (
                   <ActivityIndicator size="large" color="#0000ff" />
                 ) : (
                   <FlatList
-                    // refreshControl={
-                    //   <RefreshControl
-                    //     refreshing={refreshing}
-                    //     onRefresh={onRefresh}
-                    //   />
-                    // }
+                    refreshControl={
+                      <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                      />
+                    }
                     contentContainerStyle={{
                       justifyContent: 'space-evenly',
                       alignItems: 'stretch',
                       flexGrow: 1,
-                      // backgroundColor: 'black'
                     }}
                     data={pdfs}
                     numColumns={3}
@@ -251,7 +245,7 @@ const HomeScreen = ({navigation}) => {
             </View>
           </View>
         </View>
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };
@@ -290,19 +284,6 @@ const styles = StyleSheet.create({
   contentContainer: {
     alignItems: 'center',
   },
-  card: {
-    width: windowWidth * 0.9,
-    backgroundColor: 'white',
-    borderRadius: (windowHeight + windowWidth) * 0.0001,
-    margin: 5,
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 15},
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
-    alignItems: 'center',
-    overflow: 'hidden',
-  },
   scrollViewContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
@@ -313,7 +294,7 @@ const styles = StyleSheet.create({
     paddingRight: windowWidth * 0.02,
   },
   booksContainer: {
-    height: windowHeight * 0.8,
+    height: windowHeight * 0.7,
     backgroundColor: 'white',
     margin: (windowHeight + windowWidth) * 0.01,
     padding: 5,
@@ -329,10 +310,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     overflow: 'hidden',
     borderColor: 'transparent',
+    // backgroundColor: 'black',
   },
   bookScroll: {
     width: '100%',
     textAlign: 'center',
+    // height: windowHeight*0.5
   },
   tabsContainer: {
     flexDirection: 'row',
